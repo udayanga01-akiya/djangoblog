@@ -1,0 +1,17 @@
+body {
+background-image: url('https://t4.ftcdn.net/jpg/02/94/29/33/240_F_294293388_rMi36DO4isvXoNh8B3Q5G07X0bL9z1Ng.jpg');
+background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 0.1px;
+}
+h1 {
+    color: rgb(255, 255, 255); 
+}
+p{
+     color: rgb(255, 255, 255); 
+}
