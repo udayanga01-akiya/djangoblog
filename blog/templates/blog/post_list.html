@@ -1,54 +1,89 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Latest Articles{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="text-center mb-5">
-        <h1 class="display-4 hero-title">AKHILA HENNEDIGE</h1>
-        <p class="text-secondary fs-5">TENUWARA HENNEDIGE</p>
+<div class="container mt-4">
+
+    <!-- Hero / Name Section -->
+    <div class="text-center my-5">
+        <h1 class="display-3 fw-bold text-light text-uppercase">SRI LANKA</h1>
+       <p class="fs-4" style="color: #eae9eb;">AKHILA HENNEDIGE</p>
     </div>
 
-    <!-- කොටු 3 බැගින් සකසන Grid එක -->
+    <!-- Search Section -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="q" class="form-control bg-dark text-white border-secondary" placeholder="Search posts..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Posts Grid Section -->
     <div class="row">
-        {% for post in page_obj %}
+        {% for post in posts %}
             <div class="col-md-4 mb-4">
-                <div class="card h-100 custom-card p-2">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div>
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="badge badge-category">Article</span>
-                                <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
-                            </div>
-                            <h5 class="card-title mb-2">{{ post.title }}</h5>
-                            <p class="card-text">{{ post.content|truncatewords:12 }}</p>
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                    
+                    <!-- Photo එක පෙන්නන කොටස -->
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">
+                                {% if post.category %}{{ post.category }}{% else %}General{% endif %}
+                            </span>
+                            <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
                         </div>
+
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ post.content|truncatewords:15 }}</p>
+                        
                         <div class="mt-3">
-                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary btn-custom w-100">Read Article →</a>
+                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary w-100 mb-2">Read Article →</a>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'post_update' post.slug %}" class="btn btn-outline-warning btn-sm w-50">Edit</a>
+                                <a href="{% url 'post_delete' post.slug %}" class="btn btn-outline-danger btn-sm w-50">Delete</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <div class="col-12 text-center text-light py-5">
-                <h4>No posts available right now.</h4>
+            <div class="col-12 text-center text-white my-5">
+                <h4>No posts found.</h4>
             </div>
         {% endfor %}
     </div>
 
-    <!-- Pagination -->
-    <nav class="d-flex justify-content-center mt-4 mb-5">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">← Previous</a></li>
-            {% endif %}
-            
-            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    <!-- Pagination Section -->
+    {% if is_paginated %}
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white border-secondary" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
 
-            {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next →</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+                    <li class="page-item disabled">
+                        <span class="page-link bg-secondary text-white border-secondary">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white border-secondary" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}

@@ -1,12 +1,36 @@
-{% extends "blog/base.html" %}
-
-{% block title %}{% if object %}Edit Post{% else %}New Post{% endif %}{% endblock %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
-<h1>{% if object %}Edit Post{% else %}New Post{% endif %}</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
+<div class="container mt-5">
+    <div class="card bg-dark text-white p-4 rounded shadow" style="max-width: 600px; margin: auto;">
+        <h2 class="mb-4">{% if object %}Edit Post{% else %}New Post{% endif %}</h2>
+
+        <!-- Form Level Errors (clean() එකෙන් එන Errors) -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- එකින් එක Field එක සහ අදාළ Error එක Render කිරීම -->
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label_tag }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success px-4 mt-3">Save</button>
+            <a href="{% url 'home' %}" class="btn btn-outline-light px-4 mt-3 ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

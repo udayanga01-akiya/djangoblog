@@ -7,7 +7,6 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     search_fields = ("title", "content")
     prepopulated_fields = {"slug": ("title",)}
-    filter_horizontal = ("tags",)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
