@@ -1,20 +1,46 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+<!-- 1. Cards වලට Hover Animation එකතු කරන CSS කොටස -->
+<style>
+    .custom-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .custom-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3) !important;
+        border-color: #0d6efd !important;
+    }
+</style>
+
 <div class="container mt-4">
 
     <!-- Hero / Name Section -->
-    <div class="text-center my-5">
-        <h1 class="display-3 fw-bold text-light text-uppercase">SRI LANKA</h1>
-       <p class="fs-4" style="color: #eae9eb;">AKHILA HENNEDIGE</p>
+    <div class="text-center my-4 py-2">
+        <!-- SRI LANKA - "S" අකුර සහ "RI LANKA" අතර ඉඩ අඩු කිරීම සහ Baseline Align කිරීම -->
+        <h1 class="display-1 fw-bold text-uppercase d-flex justify-content-center align-items-baseline mb-0" style="line-height: 1;">
+            <span style="color: #ff3333; font-size: 9rem; font-weight: 900; text-shadow: 0 0 15px rgba(255, 51, 51, 0.6); margin-right: -4px;">S</span>
+            <span style="background: linear-gradient(135deg, #ffffff 30%, #0d6efd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 5rem; letter-spacing: -1px;">RI LANKA</span>
+        </h1>
+        <!-- AKHILA HENNEDIGE - නම SRI LANKA එකට ළං කිරීම -->
+        <p class="text-primary fs-4 fw-semibold mb-2" style="margin-top: -12px !important;">AKHILA HENNEDIGE</p>
+        <p class="text-muted small">Explore the beautiful island, stories, and travel experiences.</p>
     </div>
-
-    <!-- Search Section -->
-    <div class="row mb-4">
-        <div class="col-md-8 mx-auto">
-            <form method="get" class="d-flex gap-2">
-                <input type="text" name="q" class="form-control bg-dark text-white border-secondary" placeholder="Search posts..." value="{{ request.GET.q }}">
-                <button type="submit" class="btn btn-primary">Search</button>
+    <!-- 2. කොන් රවුම් කළ (Pill Style) Search Bar කොටස -->
+    <div class="row mb-5">
+        <!-- Category Filter Buttons -->
+    <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-sm btn-primary rounded-pill px-3">All Posts</a>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-white">Travel</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-white">Culture</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-white">Food</button>
+    </div>
+        <div class="col-md-6 mx-auto">
+            <form method="get" class="input-group">
+                <input type="text" name="q" class="form-control bg-dark text-white border-secondary rounded-pill-start px-4" placeholder="Search posts..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary rounded-pill-end px-4">
+                    🔍 Search
+                </button>
             </form>
         </div>
     </div>
@@ -23,29 +49,33 @@
     <div class="row">
         {% for post in posts %}
             <div class="col-md-4 mb-4">
-                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm custom-card">
                     
-                    <!-- Photo එක පෙන්නන කොටස -->
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
-                    {% endif %}
+                    <!-- 3. Image එක උඩ Category Badge එක Float කර ඇති කොටස -->
+                    <div class="position-relative">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 220px; object-fit: cover;">
+                        {% endif %}
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-3 shadow">
+                            {% if post.category %}{{ post.category }}{% else %}Travel{% endif %}
+                        </span>
+                    </div>
 
                     <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">
-                                {% if post.category %}{{ post.category }}{% else %}General{% endif %}
-                            </span>
+                        <div class="mb-2 text-end">
                             <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
                         </div>
 
-                        <h5 class="card-title">{{ post.title }}</h5>
+                        <h5 class="card-title fw-bold text-uppercase">{{ post.title }}</h5>
                         <p class="card-text text-muted flex-grow-1">{{ post.content|truncatewords:15 }}</p>
                         
                         <div class="mt-3">
-                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary w-100 mb-2">Read Article →</a>
+                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary w-100 mb-2 fw-semibold">Read Article →</a>
+                            
+                            <!-- Buttons (Edit / Delete) -->
                             <div class="d-flex gap-2">
-                                <a href="{% url 'post_update' post.slug %}" class="btn btn-outline-warning btn-sm w-50">Edit</a>
-                                <a href="{% url 'post_delete' post.slug %}" class="btn btn-outline-danger btn-sm w-50">Delete</a>
+                                <a href="{% url 'post_update' post.slug %}" class="btn btn-outline-warning btn-sm w-50 fw-bold">Edit</a>
+                                <a href="{% url 'post_delete' post.slug %}" class="btn btn-outline-danger btn-sm w-50 fw-bold">Delete</a>
                             </div>
                         </div>
                     </div>

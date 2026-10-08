@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import RegisterView
 
 urlpatterns = [
     path("", views.PostListView.as_view(), name="home"),
@@ -9,4 +10,8 @@ urlpatterns = [
     path("posts/<slug:slug>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
     path("about/", views.about, name="about"),
     path("contact/", views.contact, name="contact"),
+]
+urlpatterns = [
+    # ... අනිත් URLs ...
+    path("register/", RegisterView.as_view(), name="register"),
 ]

@@ -1,10 +1,12 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Post
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "category", "tags", "status", "image"]
+        fields = ["title", "content", "category", "tags", "status", "cover_image"]
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "content": forms.Textarea(attrs={"rows": 5, "class": "form-control"}),
@@ -28,3 +30,11 @@ class PostForm(forms.ModelForm):
         if title and content and title.lower() in content.lower()[:50]:
             raise forms.ValidationError("Don't repeat the title verbatim at the start of the content.")
         return cleaned_data
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
